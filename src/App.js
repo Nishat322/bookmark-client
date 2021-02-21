@@ -1,74 +1,76 @@
 import React, { Component } from 'react'
 
+import AddBookmark from './AddBookmark/AddBookmark'
+import BookmarkList from './BookmarkList/BookmarkList'
+import Nav from './Nav/Nav'
+import config from './config'
 import './App.css'
 
-import AddBookmark from './AddBookmark/AddBookmark'
-import BookmarkApp from './BookmarkApp/BookmarkApp'
+const bookmarks = []
 
 class App extends Component {
-  constructor(props){
-    super(props)
-    this.state = {
-      bookmarks: [],
-      showAddForm: false
-    };
+  state = {
+    page: 'list',
+    bookmarks,
+    error: null
+  }
+
+  changePage = (page) => {
+    this.setState({page})
+  }
+
+  setBookmarks = bookmarks => {
+    this.setState({
+      bookmarks,
+      error: null,
+      page: 'list'
+    })
+  }
+
+  addBookmark = bookmark => {
+    this.setState({
+      bookmarks: [...this.state.bookmarks, bookmark]
+    })
   }
 
   componentDidMount() {
-    const url = 'https://tf-ed-bookmarks-api.herokuapp.com/v3/bookmarks';
-    const options = {
+    fetch(config.API_ENDPOINT, {
       method: 'GET',
       headers: {
-        "Authorization": "Bearer $2a$10$jADMezKzCCRgEzhYuBpqfuid0gnMEkYCBo58Pvj3H5LL9CzEsNE/u",
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${config.API_KEY}`
       }
-    };
-  
-    fetch(url, options)
+    })
       .then(res => {
-        if(!res.ok) {
-          throw new Error('Something went wrong, please try again later.');
+        if(!res.ok){
+          throw new Error(res.status)
         }
-        return res;
+        return res.json()
       })
-      .then(res => res.json())
-      .then(data => {
-        this.setState({
-          bookmarks: data,
-          error: null
-        });
-      })
-      .catch(err => {
-        this.setState({
-          error: err.message
-        });
-      });
-  }
-
-  setShowAddForm(show){
-    this.setState({
-      showAddForm: show
-    })
-  }
-
-  addBookmark(bookmark){
-    this.setState({
-      bookmarks: [...this.state.bookmarks, bookmark],
-      showAddForm: false
-    })
+      .then(this.setBookmarks)
+      .catch(error => this.setState({error}))
   }
 
   render() { 
-    const page = this.state.showAddForm
-      ? <AddBookmark 
-        showForm = {show => this.setShowAddForm(show)}
-        handleAddForm = {bookmark => this.addBookmark(bookmark)}
-      />
-      : <BookmarkApp bookmarks = {this.state.bookmarks} showForm = {show => this.setShowAddForm(show)}/>
+    const {page, bookmarks} = this.state
     return (  
-      <div className = 'App'>
-        {page}
-      </div>
+      <main className = 'App'>
+        <h1>Bookmarks!</h1>
+        <Nav clickPage = {this.changePage}/>
+        <div className = 'content' aria-live = 'polite'>
+          {page === 'add' && (
+            <AddBookmark
+              onAddBookmark = {this.addBookmark}
+              onClickCancel = {() => this.changePage('list')}
+            />
+          )}
+          {page === 'list' && (
+            <BookmarkList 
+              bookmarks = {bookmarks}
+            />
+          )}
+        </div>
+      </main>
     )
   }
 }

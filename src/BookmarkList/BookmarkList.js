@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import Bookmark from '../Bookmark/Bookmark'
 
+import BookmarkItem from '../BookmarkItem/BookmarkItem'
 import './BookmarkList.css'
 
 class BookmarkList extends Component {
@@ -10,10 +10,18 @@ class BookmarkList extends Component {
     }
 
     render() { 
-        const bookmarks = this.props.bookmarks.map((bookmark, i) => <Bookmark {...bookmark} key={i}/>)
+        const {bookmarks} = this.props
         return (  
-            <div className = 'bookmarkList'>
-                {bookmarks}
+            <div className = 'BookmarkList'>
+                <h2>Your Bookmarks</h2>
+                <ul className = 'BookmarkList__list' aria-live = 'polite'>
+                    {bookmarks.map(bookmark =>
+                        <BookmarkItem
+                            key = {bookmark.id}
+                            {...bookmark}
+                        />    
+                    )}
+                </ul>
             </div>
         )
     }

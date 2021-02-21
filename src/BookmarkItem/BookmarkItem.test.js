@@ -1,12 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import BookmarkApp from './BookmarkApp'
+import BookmarkItem from './BookmarkItem'
 
-describe('BookmarkApp Component', () => {
+describe('BookmarkItem Component', () => {
     it('renders without crashing', () => {
         const div = document.createElement('div')
-        ReactDOM.render(<BookmarkApp/>, div)
+        ReactDOM.render(<BookmarkItem/>, div)
         ReactDOM.unmountComponentAtNode(div)
     })
 })

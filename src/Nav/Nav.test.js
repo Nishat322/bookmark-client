@@ -1,12 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import Bookmark from './Bookmark'
+import Nav from './Nav'
 
-describe('Bookmark Component', () => {
+describe('Nav Component', () => {
     it('renders wihtout crashing', () => {
         const div = document.createElement('div')
-        ReactDOM.render(<Bookmark/>, div)
+        ReactDOM.render(<Nav/>, div)
         ReactDOM.unmountComponentAtNode(div)
     })
 })
