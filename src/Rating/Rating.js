@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import './Rating.css'
 
@@ -13,6 +14,10 @@ function Rating(props){
         {stars}
         </div>
     )    
+}
+
+Rating.propTypes = {
+    value: PropTypes.number
 }
 
 export default Rating
